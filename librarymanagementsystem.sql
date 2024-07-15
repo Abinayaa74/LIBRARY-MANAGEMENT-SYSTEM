@@ -1,3 +1,4 @@
+--table is created for books
 create table books (
 book_id number primary key,
 title varchar2(100),
@@ -7,7 +8,7 @@ category varchar2(50),
 available_copies number
 );
 
-
+--table is created for members
 create table members (
 member_id number primary key,
 first_name varchar2(50),
@@ -16,7 +17,7 @@ email varchar2(100),
 phone_number varchar2(15),
 address varchar2(200)
 );
-
+--table is created for transactions
 create table borrowing_transactions (
 transaction_id number primary key,
 member_id number references members(member_id),
@@ -25,30 +26,30 @@ borrow_date date,
 return_date date,
 status varchar2(20)
 );
-
+--sequence for transactions
 create sequence borrowing_transactions_seq start with 1 increment by 1;
 
-
+--inserting values for table book
 insert into books values (1, 'the great gatsby', 'f. scott fitzgerald', 'scribner', 'fiction', 5);
 insert into books values (2, '1984', 'george orwell', 'secker & warburg', 'dystopian', 3);
 insert into books values (3, 'to kill a mockingbird', 'harper lee', 'j.b. lippincott & co.', 'fiction', 4);
 insert into books values (4, 'moby dick', 'herman melville', 'harper & brothers', 'adventure', 2);
 insert into books values (5, 'pride and prejudice', 'jane austen', 't. egerton', 'romance', 6);
-
+--inserting values for table members
 insert into members values (1, 'arjun', 'reddy', 'arjun.reddy@example.com', '9876543210', '12 marina beach, chennai');
 insert into members values (2, 'lakshmi', 'iyer', 'lakshmi.iyer@example.com', '8765432109', '34 anna nagar, chennai');
 insert into members values (3, 'ravi', 'kumar', 'ravi.kumar@example.com', '7654321098', '56 t nagar, chennai');
 insert into members values (4, 'sita', 'patel', 'sita.patel@example.com', '6543210987', '78 velachery, chennai');
 insert into members values (5, 'vijay', 'singh', 'vijay.singh@example.com', '5432109876', '90 adyar, chennai');
 
-
+--inserting values for table borrowing_transactions
 insert into borrowing_transactions values (1, 1, 1, to_date('2023-07-01', 'yyyy-mm-dd'), null, 'borrowed');
 insert into borrowing_transactions values (2, 2, 2, to_date('2023-07-02', 'yyyy-mm-dd'), null, 'borrowed');
 insert into borrowing_transactions values (3, 3, 3, to_date('2023-07-03', 'yyyy-mm-dd'), null, 'borrowed');
 insert into borrowing_transactions values (4, 4, 4, to_date('2023-07-04', 'yyyy-mm-dd'), null, 'borrowed');
 insert into borrowing_transactions values (5, 5, 5, to_date('2023-07-05', 'yyyy-mm-dd'), null, 'borrowed');
 
-
+--Creating a procedure to handle borrowing a book that can insert, update new information.
 create or replace procedure borrow_book (
 p_member_id in number,
 p_book_id in number
@@ -86,7 +87,7 @@ dbms_output.put_line('Error: ' || SQLCODE || ' - ' || SQLERRM);
 rollback; 
 end;
 /
-
+--Creating a procedure to handle returning a book
 
 create or replace procedure return_book (
 p_transaction_id in number
@@ -123,6 +124,7 @@ rollback;
 end;
 /
 
+--Creating a procedure to calculate fines for overdue books 
 
 create or replace procedure calculate_fines_in_rupees is
 cursor overdue_books is
@@ -138,13 +140,14 @@ dbms_output.put_line('transaction id: ' || rec.transaction_id || ', fine in rupe
 end loop;
 end;
 /
-
+--to view the tables created
 select * from  books;
 
 select * from  members;
 
 select * from  borrowing_transactions;
 
+--calling to see the output
 begin
 borrow_book(1, 1); 
 end;
